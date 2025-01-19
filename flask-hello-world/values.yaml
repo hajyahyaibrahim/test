@@ -1,0 +1,74 @@
+replicaCount: 1  # Number of replicas for the application
+
+image:
+  repository: elitamsut/myapp
+  pullPolicy: Always
+  tag: "v1.0.23"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8080  # Internal port changed to 8080
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Ensure SSL redirection is enabled
+  hosts:
+    - host: customer2-app-127-0-0-1.nip.io  # Your application domain
+      paths:
+        - /
+  tls:
+    - secretName: wildcard-tls-secret  # Replace with your actual TLS secret name
+      hosts:
+        - customer2-app-127-0-0-1.nip.io  # Your domain name
+
+resources:
+  requests:
+    memory: "256Mi"  # Adjust as necessary for your application
+    cpu: "500m"      # Adjust as necessary for your application
+  limits:
+    memory: "512Mi"  # Adjust as necessary for your application
+    cpu: "1"         # Adjust as necessary for your application
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+livenessProbe:
+  httpGet:
+    scheme: HTTPS  # Use HTTPS since the app is listening with SSL
+    path: /
+    port: 8080
+
+  initialDelaySeconds: 30  # Adjust if needed
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    scheme: HTTPS  # Use HTTPS since the app is listening with SSL
+    path: /
+    port: 8080
+
+  initialDelaySeconds: 10  # Adjust if needed
+  periodSeconds: 5
+  failureThreshold: 3
