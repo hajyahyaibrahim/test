@@ -6,6 +6,7 @@ on:
       - main
 
 env:
+  IMAGE_CONFIG: 'image-config.yaml'
   DOCKER_IMAGE: 'ibrahimhaj92/test-ibra'  # Docker image name
   IMAGE_TAG: 'latest'  # Set the tag for your Docker image (you can change this to use something dynamic)
 
